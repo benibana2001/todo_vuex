@@ -41,6 +41,8 @@ const store = new Vuex.Store({
 
     nextTaskId: 3,
     nextLabelId: 4,
+
+    filter: 0,
   },
   mutations: {
     addTask(state, { name, labelIds }) {
@@ -71,8 +73,20 @@ const store = new Vuex.Store({
         }
       });
     },
+
+    changeFilter(state, { filter }) {
+      state.filter = filter;
+    },
   },
-  getters: {},
+  getters: {
+    filteredTasks(state) {
+      if (!state.filter) {
+        return state.tasks;
+      }
+
+      return state.tasks.filter((task) => task.labelIds.includes(state.filter));
+    },
+  },
   actions: {},
   modules: {},
 });

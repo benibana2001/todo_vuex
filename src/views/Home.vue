@@ -1,6 +1,7 @@
 <template>
   <div class="home">
     <h2>タスク一覧</h2>
+
     <ul>
       <li v-for="task in tasks" :key="task.id">
         <input type="checkbox" :checked="task.done" v-on:change="toggleTaskStatus(task)" />
@@ -17,6 +18,7 @@
     </ul>
 
     <h2>ラベル一覧</h2>
+
     <ul>
       <li v-for="label in labels" :key="label.id">
         <input type="checkbox" :value="label.id" v-model="newTaskLabelIds" />
@@ -27,6 +29,20 @@
     <form v-on:submit.prevent="addLabel">
       <input type="text" v-model="newLabelText" placeholder="新しいラベル" />
     </form>
+
+    <h2>ラベルでフィルタ</h2>
+
+    <ul>
+      <li v-for="label in labels" :key="label.id">
+        <input type="radio" :checked="label.id === filter" v-on:change="changeFilter(label.id)" />
+        {{ label.text }}
+      </li>
+
+      <li>
+        <input type="radio" :checked="filter === null" v-on:change="changeFilter(null)" />
+        フィルタしない
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -39,10 +55,13 @@ export default {
   components: {},
   computed: {
     tasks() {
-      return this.$store.state.tasks;
+      return this.$store.getters.filteredTasks;
     },
     labels() {
       return this.$store.state.labels;
+    },
+    filter() {
+      return this.$store.state.filter;
     },
   },
 
@@ -79,6 +98,12 @@ export default {
     toggleTaskStatus(task) {
       this.$store.commit('toggleTaskStatus', {
         id: task.id,
+      });
+    },
+
+    changeFilter(labelId) {
+      this.$store.commit('changeFilter', {
+        filter: labelId,
       });
     },
   },
