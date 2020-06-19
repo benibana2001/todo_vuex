@@ -5,9 +5,11 @@
     <ul>
       <li v-for="task in tasks" :key="task.id">
         <input type="checkbox" :checked="task.done" @change="toggleTaskStatus(task)" />
-        {{ task.name }}
-        -
-        <span v-for="id in task.labelIds" :key="id">
+        <span :class="{ doneTask: task.done }">
+          {{ task.name }}
+        </span>
+        <span v-for="id in task.labelIds" :key="id" :class="{ doneTasksLabel: task.done }">
+          -
           {{ getLabelText(id) }}
         </span>
       </li>
@@ -122,3 +124,14 @@ export default {
   },
 };
 </script>
+
+<style>
+.doneTask {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+.doneTasksLabel {
+  color: #aaa;
+}
+</style>
