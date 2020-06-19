@@ -4,7 +4,7 @@
 
     <ul>
       <li v-for="task in tasks" :key="task.id">
-        <input type="checkbox" :checked="task.done" v-on:change="toggleTaskStatus(task)" />
+        <input type="checkbox" :checked="task.done" @change="toggleTaskStatus(task)" />
         {{ task.name }}
         -
         <span v-for="id in task.labelIds" :key="id">
@@ -12,7 +12,7 @@
         </span>
       </li>
 
-      <form v-on:submit.prevent="addTask">
+      <form @submit.prevent="addTask">
         <input type="text" v-model="newTaskName" placeholder="新しいタスク" />
       </form>
     </ul>
@@ -26,7 +26,7 @@
       </li>
     </ul>
 
-    <form v-on:submit.prevent="addLabel">
+    <form @submit.prevent="addLabel">
       <input type="text" v-model="newLabelText" placeholder="新しいラベル" />
     </form>
 
@@ -34,20 +34,20 @@
 
     <ul>
       <li v-for="label in labels" :key="label.id">
-        <input type="radio" :checked="label.id === filter" v-on:change="changeFilter(label.id)" />
+        <input type="radio" :checked="label.id === filter" @change="changeFilter(label.id)" />
         {{ label.text }}
       </li>
 
       <li>
-        <input type="radio" :checked="filter === null" v-on:change="changeFilter(null)" />
+        <input type="radio" :checked="filter === null" @change="changeFilter(null)" />
         フィルタしない
       </li>
     </ul>
 
     <h2>保存と復元</h2>
 
-    <button type="button" v-on:click="save">保存</button>
-    <button type="button" v-on:click="restore">復元</button>
+    <button type="button" @click="save">保存</button>
+    <button type="button" @click="restore">復元</button>
   </div>
 </template>
 
