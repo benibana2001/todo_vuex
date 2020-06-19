@@ -77,7 +77,16 @@ const store = new Vuex.Store({
     changeFilter(state, { filter }) {
       state.filter = filter;
     },
+
+    // eslint-disable-next-line object-curly-newline
+    restore(state, { tasks, labels, nextTaskId, nextLabelId }) {
+      state.tasks = tasks;
+      state.labels = labels;
+      state.nextTaskId = nextTaskId;
+      state.nextLabelId = nextLabelId;
+    },
   },
+
   getters: {
     filteredTasks(state) {
       if (!state.filter) {
@@ -87,7 +96,26 @@ const store = new Vuex.Store({
       return state.tasks.filter((task) => task.labelIds.includes(state.filter));
     },
   },
-  actions: {},
+
+  actions: {
+    save({ state }) {
+      const data = {
+        tasks: state.tasks,
+        labels: state.labels,
+        nextTaskId: state.nextTaskId,
+        nextLabelId: state.nextLabelId,
+      };
+
+      localStorage.setItem('task-app-data', JSON.stringify(data));
+    },
+
+    restore({ commit }) {
+      const data = localStorage.getItem('task-app-data');
+      if (data) {
+        commit('restore', JSON.parse(data));
+      }
+    },
+  },
   modules: {},
 });
 
