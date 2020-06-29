@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { TaskState } from './state';
+import { Mutations } from './mutation';
+import { TaskActions } from './actions';
 
 Vue.use(Vuex);
 
-const defaultState: TaskState = {
+export const defaultState: TaskState = {
   tasks: [
     {
       id: 1,
@@ -83,55 +86,25 @@ const mutations: Mutations = {
   },
 };
 
-interface MutationPayloads {
-  addTask: {
-    name: string;
-    labelIds: number[];
-  };
+const actions: TaskActions = {
+  save({ state }) {
+    const data = {
+      tasks: state.tasks,
+      labels: state.labels,
+      nextTaskId: state.nextTaskId,
+      nextLabelId: state.nextLabelId,
+    };
 
-  addLabel: {
-    text: string;
-  };
+    localStorage.setItem('task-app-data', JSON.stringify(data));
+  },
 
-  toggleTaskStatus: {
-    id: number;
-  };
-
-  changeFilter: {
-    filter: number;
-  };
-
-  restore: TaskState;
-}
-
-type MutationHandler<K extends keyof MutationPayloads> = (
-  state: TaskState,
-  payload: MutationPayloads[K]
-) => void;
-
-type Mutations = {
-  [K in keyof MutationPayloads]: MutationHandler<K>;
+  restore({ commit }) {
+    const data = localStorage.getItem('task-app-data');
+    if (data) {
+      commit('restore', JSON.parse(data));
+    }
+  },
 };
-
-interface Task {
-  id: number;
-  name: string;
-  labelIds: number[];
-  done: boolean;
-}
-
-interface Label {
-  id: number;
-  text: string;
-}
-
-interface TaskState {
-  tasks: Task[];
-  labels: Label[];
-  nextTaskId: number;
-  nextLabelId: number;
-  filter: number;
-}
 
 const store = new Vuex.Store<TaskState>({
   state: defaultState,
@@ -148,25 +121,7 @@ const store = new Vuex.Store<TaskState>({
     },
   },
 
-  actions: {
-    save({ state }) {
-      const data = {
-        tasks: state.tasks,
-        labels: state.labels,
-        nextTaskId: state.nextTaskId,
-        nextLabelId: state.nextLabelId,
-      };
-
-      localStorage.setItem('task-app-data', JSON.stringify(data));
-    },
-
-    restore({ commit }) {
-      const data = localStorage.getItem('task-app-data');
-      if (data) {
-        commit('restore', JSON.parse(data));
-      }
-    },
-  },
+  actions,
 
   modules: {},
 });
